@@ -1,0 +1,13 @@
+<?php
+/**
+ * Copyright © devnicolas. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+/** @var \Devnicolas\ButtonColor\Block\ButtonColor $block */
+?>
+<?php if ($block->hasButtonColor()): ?>
+    <style type="text/css">
+        <?= /* @noEscape */ $block->getButtonColorCss() ?>
+    </style>
+<?php endif; ?>
