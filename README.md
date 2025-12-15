@@ -1,7 +1,5 @@
 # Módulo Button Color Changer - Alteração de Cor de Botões por Store-View
 
-
-
 ## Processo de Concepção e Desenvolvimento
 
 ### 1. Análise dos Requisitos

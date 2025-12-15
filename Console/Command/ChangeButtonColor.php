@@ -125,15 +125,15 @@ class ChangeButtonColor extends Command
         // Try to get storeViewId from the second argument first, if not available, try the first
         $storeViewId = $input->getArgument('storeViewId');
         $hexColor = $input->getArgument('hexColor');
-        
+
         // If storeViewId is not provided but hexColor is, use hexColor as storeViewId
         // (this handles the case where user passes: --reset 1)
-        if (!$storeViewId && $hexColor && is_numeric($hexColor)) {
+        if (($storeViewId === null || $storeViewId === '') && $hexColor !== null && $hexColor !== '' && is_numeric($hexColor)) {
             $storeViewId = $hexColor;
         }
 
         // Validate store view ID is provided
-        if (!$storeViewId) {
+        if ($storeViewId === null || $storeViewId === '') {
             $output->writeln('<error>Store view ID is required when using --reset option.</error>');
             return Cli::RETURN_FAILURE;
         }
@@ -168,7 +168,7 @@ class ChangeButtonColor extends Command
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
             $output->writeln(
-                '<info>Button color configuration successfully reset for store view "' . 
+                '<info>Button color configuration successfully reset for store view "' .
                 $store->getName() . '" (ID: ' . $storeViewId . ').</info>'
             );
             $output->writeln('<info>Inline styles have been removed. Configuration cache has been cleared.</info>');
@@ -193,7 +193,8 @@ class ChangeButtonColor extends Command
         $storeViewId = $input->getArgument('storeViewId');
 
         // Validate arguments are provided
-        if (!$hexColor || !$storeViewId) {
+        // Use strict comparison to handle 0 as valid storeViewId
+        if ($hexColor === null || $hexColor === '' || $storeViewId === null || $storeViewId === '') {
             $output->writeln('<error>Both hexColor and storeViewId are required when not using --reset option.</error>');
             return Cli::RETURN_FAILURE;
         }
@@ -238,7 +239,7 @@ class ChangeButtonColor extends Command
             $this->cacheManager->clean([\Magento\Framework\App\Cache\Type\Config::TYPE_IDENTIFIER]);
 
             $output->writeln(
-                '<info>Button color successfully changed to #' . $hexColor . ' for store view "' . 
+                '<info>Button color successfully changed to #' . $hexColor . ' for store view "' .
                 $store->getName() . '" (ID: ' . $storeViewId . ').</info>'
             );
             $output->writeln('<info>Configuration cache has been cleared.</info>');
@@ -271,7 +272,8 @@ class ChangeButtonColor extends Command
      */
     private function isValidHexColor(string $hexColor): bool
     {
-        return preg_match('/^[0-9A-F]{6}$/i', $hexColor) === 1;
+        // Aceita 3 ou 6 caracteres hexadecimais (já sem #, pois normalizeHexColor remove)
+        return preg_match('/^([0-9A-F]{3}|[0-9A-F]{6})$/i', $hexColor) === 1;
     }
 }
 
